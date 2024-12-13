@@ -12,52 +12,20 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
         // Obter o formulário preenchível do PDF
         const form = pdfDoc.getForm();
 
-        // Preencher campos no formulário (modifique os nomes conforme necessário)
-        const nomeField = form.getTextField('nome');
+        // Preencher campos no formulário (substitua os nomes pelos campos reais do seu PDF)
+        const nomeField = form.getTextField('nome'); // Substitua 'nome' pelo nome real do campo
         nomeField.setText('João');
 
-        const emailField = form.getTextField('email');
+        const emailField = form.getTextField('email'); // Substitua 'email' pelo nome real do campo
         emailField.setText('joao@email.com');
 
-        // Criar um novo PDF com as páginas convertidas em imagem
-        const newPdfDoc = await PDFDocument.create();
+        // Salvar o PDF com os campos preenchidos
+        const pdfBytes = await pdfDoc.save();
 
-        // Vamos percorrer cada página do PDF original e renderizar como imagem
-        const pages = await pdfDoc.getPages();
-        for (const page of pages) {
-            const { width, height } = page.getSize();
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = width;
-            canvas.height = height;
-
-            // Renderizar a página no canvas
-            const viewport = page.getViewport({ scale: 1 });
-            await page.render({
-                canvasContext: context,
-                viewport: viewport,
-            });
-
-            // Agora, vamos gerar uma imagem em forma de bytes
-            const imgData = canvas.toDataURL('image/png'); // Converte para imagem
-
-            // Adicionar uma nova página ao novo PDF com a imagem renderizada
-            const imageBytes = await fetch(imgData).then(res => res.arrayBuffer());
-            const image = await newPdfDoc.embedPng(imageBytes);
-
-            newPdfDoc.addPage([width, height]);
-
-            const pageToAdd = newPdfDoc.getPages()[newPdfDoc.getPages().length - 1];
-            pageToAdd.drawImage(image, { x: 0, y: 0, width, height });
-        }
-
-        // Salvar o novo PDF com as imagens
-        const pdfBytes = await newPdfDoc.save();
-
-        // Criar link para download do PDF com as imagens
+        // Criar link para download do PDF com os campos preenchidos
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
-        link.download = 'formulario_preenchido_imagem.pdf';
+        link.download = 'formulario_preenchido.pdf';
         link.click();
 
         // Limpar o objeto URL após o download
