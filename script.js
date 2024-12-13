@@ -1,42 +1,48 @@
-const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Link direto ao PDF
+const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Certifique-se de que o link direto ao PDF está correto
 
-// Carregar o PDF e permitir edição de campos
-document.addEventListener('DOMContentLoaded', async () => {
+// Referências aos elementos HTML
+const canvas = document.getElementById('pdf-canvas');
+const context = canvas.getContext('2d');
+
+// Carregar o PDF com o PDF.js e exibir no canvas
+pdfjsLib.getDocument(url).promise.then(function(pdf) {
+    pdf.getPage(1).then(function(page) {
+        const viewport = page.getViewport({ scale: 1 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        page.render({
+            canvasContext: context,
+            viewport: viewport
+        });
+    });
+});
+
+// Adicionar funcionalidade para salvar o PDF preenchido
+document.getElementById('save-pdf').addEventListener('click', async function() {
     const { PDFDocument } = PDFLib;
 
     // Carregar o PDF original
     const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-    // Obter o formulário do PDF
+    // Obter os campos do formulário preenchível
     const form = pdfDoc.getForm();
+    const fields = form.getFields();
 
-    // Obter os campos do formulário
-    const textFields = form.getFields();
-    textFields.forEach((field) => {
-        const name = field.getName();
-        console.log(`Campo encontrado: ${name}`);
+    // Capturar os valores preenchidos no navegador
+    fields.forEach(field => {
+        const fieldName = field.getName();
+        const fieldType = field.constructor.name;
+        console.log(`Campo detectado: ${fieldName} (${fieldType})`);
     });
 
-    // Exibir o PDF no navegador
+    // Salvar o PDF preenchido
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const urlBlob = URL.createObjectURL(blob);
 
-    const iframe = document.createElement('iframe');
-    iframe.src = urlBlob;
-    iframe.width = '100%';
-    iframe.height = '500px';
-    document.body.appendChild(iframe);
-
-    // Botão para salvar o PDF preenchido
-    const saveButton = document.getElementById('save-pdf');
-    saveButton.addEventListener('click', async () => {
-        const filledPdfBytes = await pdfDoc.save();
-        const blob = new Blob([filledPdfBytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'formulario_preenchido.pdf';
-        link.click();
-    });
+    // Criar link para download do PDF preenchido
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+    link.download = 'formulario_preenchido.pdf';
+    link.click();
 });
