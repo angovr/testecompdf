@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,15 +34,32 @@
     </style>
 </head>
 <body>
-    <h1>Preencher e Salvar PDF</h1>
+    <h1>Preencher e Guardar PDF</h1>
 
     <!-- Contêiner para exibir o PDF em um iframe -->
     <div id="pdf-container">
         <iframe id="pdf-iframe" src="https://angovr.github.io/testecompdf/formulario.pdf" frameborder="0"></iframe>
     </div>
 
-    <button id="save-pdf">Salvar PDF Preenchido</button>
+    <button id="save-pdf">Guardar PDF Preenchido</button>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('save-pdf').addEventListener('click', async () => {
+            const url = 'https://angovr.github.io/testecompdf/formulario.pdf';
+            const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
+            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+            
+            const form = pdfDoc.getForm();
+            // Aqui podes preencher o formulário com os dados desejados
+            form.getTextField('nome').setText('Preenchido');
+            
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'formulario_preenchido.pdf';
+            link.click();
+        });
+    </script>
 </body>
 </html>
