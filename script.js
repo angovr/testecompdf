@@ -1,5 +1,23 @@
 const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Link do PDF original
 
+// Referência ao canvas para exibição do PDF
+const canvas = document.getElementById('pdf-canvas');
+const context = canvas.getContext('2d');
+
+// Carregar o PDF com o PDF.js e exibir no canvas
+pdfjsLib.getDocument(url).promise.then(function(pdf) {
+    pdf.getPage(1).then(function(page) {
+        const viewport = page.getViewport({ scale: 1 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        page.render({
+            canvasContext: context,
+            viewport: viewport
+        });
+    });
+});
+
 // Adicionar funcionalidade para salvar o PDF preenchido
 document.getElementById('save-pdf').addEventListener('click', async function() {
     const { PDFDocument } = PDFLib;
@@ -30,4 +48,7 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
     link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
     link.download = 'formulario_preenchido.pdf';
     link.click();
+
+    // Limpar o objeto URL após o download
+    URL.revokeObjectURL(link.href);
 });
