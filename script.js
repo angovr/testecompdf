@@ -1,22 +1,31 @@
-const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Link para o PDF preenchível
+const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // URL do PDF
 
-// Referência ao canvas para exibição do PDF
-const canvas = document.getElementById('pdf-canvas');
-const context = canvas.getContext('2d');
+// Função para renderizar todas as páginas do PDF
+async function renderPDF() {
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    const container = document.getElementById('pdf-container');
+    container.innerHTML = ''; // Limpar o conteúdo do container
 
-// Carregar e exibir o PDF no canvas usando PDF.js
-pdfjsLib.getDocument(url).promise.then(function(pdf) {
-    pdf.getPage(1).then(function(page) {
+    // Loop para renderizar todas as páginas
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+        const page = await pdf.getPage(pageNumber);
         const viewport = page.getViewport({ scale: 1 });
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+
+        const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
-        page.render({
+        await page.render({
             canvasContext: context,
             viewport: viewport
         });
-    });
-});
+    }
+}
+
+// Carregar o PDF e renderizar as páginas
+renderPDF();
 
 // Adicionar funcionalidade para salvar o PDF preenchido
 document.getElementById('save-pdf').addEventListener('click', async function() {
@@ -29,14 +38,12 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
     // Obter o formulário do PDF (os campos preenchíveis)
     const form = pdfDoc.getForm();
 
-    // Aqui você pode preencher os campos, por exemplo:
-    // Preenchendo o campo 'nome' com 'João'
-    const nomeField = form.getTextField('nome');
-    nomeField.setText('João'); // Altere o valor conforme necessário
+    // Aqui você pode preencher os campos do formulário preenchível diretamente no PDF
+    const nomeField = form.getTextField('nome'); // Nome do campo no PDF
+    nomeField.setText('João'); // Defina o valor do campo
 
-    // Preenchendo o campo 'email' com 'joao@email.com'
-    const emailField = form.getTextField('email');
-    emailField.setText('joao@email.com'); // Altere o valor conforme necessário
+    const emailField = form.getTextField('email'); // Nome do campo no PDF
+    emailField.setText('joao@email.com'); // Defina o valor do campo
 
     // Salvar o PDF preenchido
     const pdfBytes = await pdfDoc.save();
