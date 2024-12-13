@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preencher Formulário PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+    <h1>Preencher o Formulário PDF</h1>
+ 
+    <canvas id="pdf-canvas"></canvas>
+ 
+    <script>
+        const url = 'formulario.pdf';  // Caminho para o seu arquivo PDF no repositório
+ 
+        const canvas = document.getElementById('pdf-canvas');
+        const context = canvas.getContext('2d');
+ 
+        pdfjsLib.getDocument(url).promise.then(function(pdf) {
+            pdf.getPage(1).then(function(page) {
+                const viewport = page.getViewport({ scale: 1 });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+ 
+                page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                });
+            });
+        });
+    </script>
+</body>
+</html>
 
