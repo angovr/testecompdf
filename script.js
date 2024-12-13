@@ -1,12 +1,12 @@
 const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // URL do PDF
 
-// Função para renderizar todas as páginas do PDF
+// Carregar e exibir o PDF usando pdf.js
 async function renderPDF() {
     const pdf = await pdfjsLib.getDocument(url).promise;
     const container = document.getElementById('pdf-container');
     container.innerHTML = ''; // Limpar o conteúdo do container
 
-    // Loop para renderizar todas as páginas
+    // Adicionar visualização de todas as páginas no container
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
         const page = await pdf.getPage(pageNumber);
         const viewport = page.getViewport({ scale: 1 });
@@ -31,21 +31,21 @@ renderPDF();
 document.getElementById('save-pdf').addEventListener('click', async function() {
     const { PDFDocument } = PDFLib;
 
-    // Carregar o PDF original
+    // Carregar o PDF original usando pdf-lib
     const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-    // Obter o formulário do PDF (os campos preenchíveis)
+    // Obter o formulário preenchível do PDF
     const form = pdfDoc.getForm();
 
-    // Aqui você pode preencher os campos do formulário preenchível diretamente no PDF
-    const nomeField = form.getTextField('nome'); // Nome do campo no PDF
-    nomeField.setText('João'); // Defina o valor do campo
+    // Exemplo de como preencher campos do formulário
+    const nomeField = form.getTextField('nome'); // Substitua 'nome' pelo nome correto do campo no PDF
+    nomeField.setText('João');
 
-    const emailField = form.getTextField('email'); // Nome do campo no PDF
-    emailField.setText('joao@email.com'); // Defina o valor do campo
+    const emailField = form.getTextField('email'); // Substitua 'email' pelo nome correto do campo no PDF
+    emailField.setText('joao@email.com');
 
-    // Salvar o PDF preenchido
+    // Salvar o PDF com os campos preenchidos
     const pdfBytes = await pdfDoc.save();
 
     // Criar link para download do PDF preenchido
