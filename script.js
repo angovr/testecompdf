@@ -1,4 +1,4 @@
-const url = 'https://github.com/angovr/testecompdf/blob/a6fe891ba2f68cc9dda0143ff82385f79c60372d/formulario.pdf';
+const url = 'https://angovr.github.io/testecompdf/formulario.pdf';
 
 // Referências aos elementos HTML
 const canvas = document.getElementById('pdf-canvas');
