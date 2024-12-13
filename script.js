@@ -1,22 +1,4 @@
-const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Certifique-se de que o link direto ao PDF está correto
-
-// Referências aos elementos HTML
-const canvas = document.getElementById('pdf-canvas');
-const context = canvas.getContext('2d');
-
-// Carregar o PDF com o PDF.js e exibir no canvas
-pdfjsLib.getDocument(url).promise.then(function(pdf) {
-    pdf.getPage(1).then(function(page) {
-        const viewport = page.getViewport({ scale: 1 });
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        page.render({
-            canvasContext: context,
-            viewport: viewport
-        });
-    });
-});
+const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // Link do PDF original
 
 // Adicionar funcionalidade para salvar o PDF preenchido
 document.getElementById('save-pdf').addEventListener('click', async function() {
@@ -28,14 +10,17 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
 
     // Obter os campos do formulário preenchível
     const form = pdfDoc.getForm();
-    const fields = form.getFields();
 
-    // Capturar os valores preenchidos no navegador
-    fields.forEach(field => {
-        const fieldName = field.getName();
-        const fieldType = field.constructor.name;
-        console.log(`Campo detectado: ${fieldName} (${fieldType})`);
-    });
+    // Capturar os valores preenchidos no HTML
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+
+    // Preencher os campos do PDF com os valores do formulário HTML
+    const nomeField = form.getTextField('nome'); // Supondo que o campo se chame 'nome' no PDF
+    nomeField.setText(nome);
+
+    const emailField = form.getTextField('email'); // Supondo que o campo se chame 'email' no PDF
+    emailField.setText(email);
 
     // Salvar o PDF preenchido
     const pdfBytes = await pdfDoc.save();
