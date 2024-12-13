@@ -1,38 +1,5 @@
 const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // URL do PDF
 
-// Função para carregar e renderizar o PDF com pdf.js
-async function renderPDF() {
-    try {
-        const pdf = await pdfjsLib.getDocument(url).promise;
-        const container = document.getElementById('pdf-container');
-        container.innerHTML = ''; // Limpar o conteúdo do container
-
-        // Renderizar todas as páginas
-        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-            const page = await pdf.getPage(pageNumber);
-            const viewport = page.getViewport({ scale: 1 });
-
-            const canvas = document.createElement('canvas');
-            container.appendChild(canvas);
-
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            await page.render({
-                canvasContext: context,
-                viewport: viewport
-            });
-        }
-    } catch (error) {
-        console.error("Erro ao carregar o PDF:", error);
-        alert("Erro ao carregar o PDF. Verifique a URL e tente novamente.");
-    }
-}
-
-// Carregar e renderizar o PDF
-renderPDF();
-
 // Adicionar funcionalidade para salvar o PDF preenchido
 document.getElementById('save-pdf').addEventListener('click', async function() {
     try {
@@ -45,20 +12,52 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
         // Obter o formulário preenchível do PDF
         const form = pdfDoc.getForm();
 
-        // Preencher campos no formulário
-        const nomeField = form.getTextField('nome'); // Substitua 'nome' pelo nome correto do campo no PDF
+        // Preencher campos no formulário (modifique os nomes conforme necessário)
+        const nomeField = form.getTextField('nome');
         nomeField.setText('João');
 
-        const emailField = form.getTextField('email'); // Substitua 'email' pelo nome correto do campo no PDF
+        const emailField = form.getTextField('email');
         emailField.setText('joao@email.com');
 
-        // Salvar o PDF com os campos preenchidos
-        const pdfBytes = await pdfDoc.save();
+        // Criar um novo PDF com as páginas convertidas em imagem
+        const newPdfDoc = await PDFDocument.create();
 
-        // Criar link para download do PDF preenchido
+        // Vamos percorrer cada página do PDF original e renderizar como imagem
+        const pages = await pdfDoc.getPages();
+        for (const page of pages) {
+            const { width, height } = page.getSize();
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+
+            // Renderizar a página no canvas
+            const viewport = page.getViewport({ scale: 1 });
+            await page.render({
+                canvasContext: context,
+                viewport: viewport,
+            });
+
+            // Agora, vamos gerar uma imagem em forma de bytes
+            const imgData = canvas.toDataURL('image/png'); // Converte para imagem
+
+            // Adicionar uma nova página ao novo PDF com a imagem renderizada
+            const imageBytes = await fetch(imgData).then(res => res.arrayBuffer());
+            const image = await newPdfDoc.embedPng(imageBytes);
+
+            newPdfDoc.addPage([width, height]);
+
+            const pageToAdd = newPdfDoc.getPages()[newPdfDoc.getPages().length - 1];
+            pageToAdd.drawImage(image, { x: 0, y: 0, width, height });
+        }
+
+        // Salvar o novo PDF com as imagens
+        const pdfBytes = await newPdfDoc.save();
+
+        // Criar link para download do PDF com as imagens
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
-        link.download = 'formulario_preenchido.pdf';
+        link.download = 'formulario_preenchido_imagem.pdf';
         link.click();
 
         // Limpar o objeto URL após o download
