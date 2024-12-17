@@ -3,46 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preencher PDF</title>
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+    <title>Visualizador PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #pdf-container {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #ccc;
-            overflow: auto;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
         }
     </style>
 </head>
 <body>
-    <h1>Preencher e Guardar PDF</h1>
-
-    <!-- Contêiner para exibir o PDF em um iframe -->
-    <div id="pdf-container">
-        <iframe id="pdf-iframe" src="https://angovr.github.io/testecompdf/formulario.pdf" frameborder="0"></iframe>
-    </div>
-
-    <button id="save-pdf">Guardar PDF Preenchido</button>
-
+    <canvas id="pdf-canvas"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
