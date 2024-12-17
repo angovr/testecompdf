@@ -3,33 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizar PDF</title>
+    <title>Preencher Formulário</title>
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+            margin: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
         }
         #pdf-container {
             width: 100%;
-            height: 100vh; /* Ajusta o tamanho para ocupar toda a altura da janela */
-            border: none;
-            overflow: hidden;
+            height: 600px;
+            border: 1px solid #ccc;
+            overflow: auto;
         }
         iframe {
             width: 100%;
             height: 100%;
-            border: none;
         }
     </style>
 </head>
 <body>
+    <h1>Preencher Formulário</h1>
+
     <!-- Contêiner para exibir o PDF em um iframe -->
     <div id="pdf-container">
         <iframe id="pdf-iframe" src="https://angovr.github.io/testecompdf/formulario.pdf" frameborder="0"></iframe>
     </div>
+
+    <!-- Botões para salvar em PDF ou HTML -->
+    <button id="save-pdf">Salvar como PDF</button>
+    <button id="save-html">Salvar como HTML</button>
 
     <script src="script.js"></script>
 </body>
