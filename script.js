@@ -13,25 +13,20 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
         // Obter o formulário preenchível do PDF
         const form = pdfDoc.getForm();
 
-        // Exemplo de preenchimento dos campos do formulário (substitua pelos campos reais do seu PDF)
-        const nomeField = form.getTextField('nome'); // Substitua 'nome' pelo nome real do campo no PDF
+        // Exemplo de preenchimento dos campos do formulário
+        const nomeField = form.getTextField('nome');
         nomeField.setText('João da Silva');
         console.log('Campo nome preenchido');
 
-        const emailField = form.getTextField('email'); // Substitua 'email' pelo nome real do campo no PDF
+        const emailField = form.getTextField('email');
         emailField.setText('joao@email.com');
         console.log('Campo email preenchido');
 
-        // "Flatten" o formulário (transforma os campos preenchidos em texto não editável)
-        await pdfDoc.flatten(); // Isso deve garantir que os campos sejam convertidos em texto simples
+        // "Flatten" o formulário para tornar os campos não editáveis
+        await pdfDoc.flatten();
+        console.log('Campos de formulário convertidos em texto estático');
 
-        // Remover os campos de formulário interativos (evitar qualquer possibilidade de edição)
-        const formFields = pdfDoc.getForm().getFields();
-        formFields.forEach(field => {
-            field.remove(); // Remove os campos de formulário
-        });
-
-        // Salvar o PDF preenchido (como um arquivo não editável)
+        // Salvar o PDF preenchido
         const pdfBytes = await pdfDoc.save();
         console.log('PDF salvo');
 
