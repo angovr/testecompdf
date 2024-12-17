@@ -14,16 +14,16 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
         const form = pdfDoc.getForm();
 
         // Exemplo de preenchimento dos campos do formulário
-        const nomeField = form.getTextField('nome');
+        const nomeField = form.getTextField('nome'); // Certifique-se que o campo 'nome' está correto no seu PDF
         nomeField.setText('João da Silva');
         console.log('Campo nome preenchido');
 
-        const emailField = form.getTextField('email');
+        const emailField = form.getTextField('email'); // Certifique-se que o campo 'email' está correto no seu PDF
         emailField.setText('joao@email.com');
         console.log('Campo email preenchido');
 
         // "Flatten" o formulário para tornar os campos não editáveis
-        await pdfDoc.flatten();
+        form.flatten(); // Garantir que os campos se tornem texto estático
         console.log('Campos de formulário convertidos em texto estático');
 
         // Salvar o PDF preenchido
