@@ -1,46 +1,66 @@
-document.getElementById('save-pdf').addEventListener('click', async function() {
+document.getElementById('save-pdf').addEventListener('click', function() {
     try {
         console.log('Botão clicado');
-        const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // URL do PDF original
-        const { PDFDocument } = PDFLib;
 
-        // Carregar o PDF original
-        const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
-        console.log('PDF carregado');
-        const pdfDoc = await PDFDocument.load(existingPdfBytes);
-        console.log('PDF processado');
+        // Dados preenchidos
+        const nome = "João da Silva";
+        const email = "joao@email.com";
 
-        // Obter o formulário preenchível do PDF
-        const form = pdfDoc.getForm();
+        // Criar o conteúdo HTML
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="pt-PT">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Formulário Preenchido</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h1 {
+                        color: #4CAF50;
+                    }
+                    .field {
+                        margin: 10px 0;
+                    }
+                    .field label {
+                        font-weight: bold;
+                    }
+                    .field span {
+                        margin-left: 10px;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Formulário Preenchido</h1>
+                <div class="field">
+                    <label for="nome">Nome:</label>
+                    <span>${nome}</span>
+                </div>
+                <div class="field">
+                    <label for="email">Email:</label>
+                    <span>${email}</span>
+                </div>
+            </body>
+            </html>
+        `;
 
-        // Exemplo de preenchimento dos campos do formulário
-        const nomeField = form.getTextField('nome'); // Certifique-se que o campo 'nome' está correto no seu PDF
-        nomeField.setText('João da Silva');
-        console.log('Campo nome preenchido');
+        // Criar um Blob com o conteúdo HTML
+        const blob = new Blob([htmlContent], { type: 'text/html' });
 
-        const emailField = form.getTextField('email'); // Certifique-se que o campo 'email' está correto no seu PDF
-        emailField.setText('joao@email.com');
-        console.log('Campo email preenchido');
-
-        // "Flatten" o formulário para tornar os campos não editáveis
-        form.flatten(); // Garantir que os campos se tornem texto estático
-        console.log('Campos de formulário convertidos em texto estático');
-
-        // Salvar o PDF preenchido
-        const pdfBytes = await pdfDoc.save();
-        console.log('PDF salvo');
-
-        // Criar link para download do PDF preenchido
+        // Criar um link para o download do HTML
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
-        link.download = 'formulario_preenchido.pdf'; // Nome do arquivo para download
+        link.href = URL.createObjectURL(blob);
+        link.download = 'formulario_preenchido.html'; // Nome do arquivo HTML para download
         link.click();
         console.log('Download iniciado');
 
         // Limpar o objeto URL após o download
         URL.revokeObjectURL(link.href);
     } catch (error) {
-        console.error("Erro ao salvar o PDF:", error);
-        alert("Erro ao salvar o PDF.");
+        console.error("Erro ao salvar o HTML:", error);
+        alert("Erro ao salvar o HTML.");
     }
 });
