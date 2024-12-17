@@ -22,6 +22,13 @@ document.getElementById('save-pdf').addEventListener('click', async function() {
         emailField.setText('joao@email.com');
         console.log('Campo email preenchido');
 
+        // Após preencher, podemos desabilitar os campos ou removê-los:
+        nomeField.disable();  // Desabilita o campo de nome para impedir a edição
+        emailField.disable(); // Desabilita o campo de email
+
+        // Alternativamente, podemos "flatten" o formulário (tornar os campos em texto)
+        pdfDoc.flatten(); // Faz com que todos os campos preenchidos sejam transformados em texto simples
+
         // Salvar o PDF preenchido
         const pdfBytes = await pdfDoc.save();
         console.log('PDF salvo');
