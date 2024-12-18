@@ -3,34 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizar PDF</title>
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+    <title>Visualizar e Imprimir PDF</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
         #pdf-container {
             width: 100%;
-            height: 100vh; /* Ajusta o tamanho para ocupar toda a altura da janela */
-            border: none;
-            overflow: hidden;
+            height: 90vh;
+            border: 1px solid #ccc;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        #save-button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Contêiner para exibir o PDF em um iframe -->
+    <!-- Contêiner para exibir o PDF -->
     <div id="pdf-container">
-        <iframe id="pdf-iframe" src="https://angovr.github.io/testecompdf/formulario.pdf" frameborder="0"></iframe>
+        <!-- O PDF será carregado aqui -->
+        <iframe id="pdf-iframe" src="https://example.com/path/to/your.pdf" width="100%" height="100%"></iframe>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Botão para iniciar o processo de impressão -->
+    <button id="save-button">Imprimir como PDF</button>
+
+    <script>
+        // Event listener para o botão de salvar (imprimir)
+        document.getElementById('save-button').addEventListener('click', () => {
+            const iframe = document.getElementById('pdf-iframe');
+            
+            // Verifica se o conteúdo do iframe está carregado
+            if (iframe.contentWindow) {
+                // Chama o método print() do conteúdo do iframe
+                iframe.contentWindow.print();
+            } else {
+                alert("O conteúdo do PDF não está acessível.");
+            }
+        });
+    </script>
 </body>
 </html>
