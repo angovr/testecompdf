@@ -46,13 +46,12 @@ window.addEventListener('DOMContentLoaded', async function () {
         link.download = nomeArquivo; // Nome do arquivo para download
         document.body.appendChild(link);
         link.click();
-        console.log(`Download iniciado: ${nomeArquivo}`);
 
-        // Limpar o objeto URL após o download
-        URL.revokeObjectURL(link.href);
-        document.body.removeChild(link);
+        // Adicionar evento de impressão
+        window.onafterprint = () => {
+            link.click();
+        };
     } catch (error) {
-        console.error('Erro ao salvar o PDF automaticamente:', error);
-        alert('Erro ao salvar o PDF.');
+        console.error('Erro ao processar o PDF:', error);
     }
 });

@@ -30,7 +30,28 @@
     <div id="pdf-container">
         <iframe id="pdf-iframe" src="https://angovr.github.io/testecompdf/formulario.pdf" frameborder="0"></iframe>
     </div>
+    <button id="save-pdf">Salvar PDF</button>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('save-pdf').addEventListener('click', async () => {
+            const url = document.getElementById('pdf-iframe').src;
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'formulario.pdf';
+            link.click();
+        });
+
+        window.onafterprint = async () => {
+            const url = document.getElementById('pdf-iframe').src;
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'formulario.pdf';
+            link.click();
+        };
+    </script>
 </body>
 </html>
