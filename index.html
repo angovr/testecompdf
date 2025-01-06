@@ -37,9 +37,20 @@
             const url = document.getElementById('pdf-iframe').src;
             const response = await fetch(url);
             const blob = await response.blob();
+
+            // Obter a data atual no formato "YYYY-MM-DD"
+            const today = new Date();
+            const dataAtual = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            // Nome do responsável (substituir com valor dinâmico, se necessário)
+            const nomeResponsavel = 'João da Silva';
+
+            // Gerar o nome do arquivo dinamicamente
+            const nomeArquivo = `Formulario_${nomeResponsavel.replace(/ /g, '_')}_${dataAtual}.pdf`;
+
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = 'formulario.pdf';
+            link.download = nomeArquivo;
             link.click();
         });
 
@@ -47,9 +58,20 @@
             const url = document.getElementById('pdf-iframe').src;
             const response = await fetch(url);
             const blob = await response.blob();
+
+            // Obter a data atual no formato "YYYY-MM-DD"
+            const today = new Date();
+            const dataAtual = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            // Nome do responsável (substituir com valor dinâmico, se necessário)
+            const nomeResponsavel = 'João da Silva';
+
+            // Gerar o nome do arquivo dinamicamente
+            const nomeArquivo = `Formulario_${nomeResponsavel.replace(/ /g, '_')}_${dataAtual}.pdf`;
+
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = 'formulario.pdf';
+            link.download = nomeArquivo;
             link.click();
         };
     </script>
