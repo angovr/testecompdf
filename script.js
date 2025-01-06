@@ -1,9 +1,7 @@
-document.getElementById('save-pdf').addEventListener('click', async function () {
+document.getElementById('save-pdf').addEventListener('click', async function() {
     try {
         console.log('Botão clicado');
-        
-        // URL do PDF original
-        const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; 
+        const url = 'https://angovr.github.io/testecompdf/formulario.pdf'; // URL do PDF original
         const { PDFDocument } = PDFLib;
 
         // Carregar o PDF original
@@ -16,9 +14,8 @@ document.getElementById('save-pdf').addEventListener('click', async function () 
         const form = pdfDoc.getForm();
 
         // Exemplo de preenchimento dos campos do formulário
-        const nomeResponsavel = 'João da Silva'; // Substituir com valor dinâmico, se necessário
         const nomeField = form.getTextField('nome');
-        nomeField.setText(nomeResponsavel);
+        nomeField.setText('João da Silva');
         console.log('Campo nome preenchido');
 
         const emailField = form.getTextField('email');
@@ -33,24 +30,17 @@ document.getElementById('save-pdf').addEventListener('click', async function () 
         const pdfBytes = await pdfDoc.save();
         console.log('PDF salvo');
 
-        // Obter a data atual no formato "YYYY-MM-DD"
-        const today = new Date();
-        const dataAtual = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-        // Gerar o nome do arquivo dinamicamente
-        const nomeArquivo = `Formulario_${nomeResponsavel.replace(/ /g, '_')}_${dataAtual}.pdf`;
-
         // Criar link para download do PDF preenchido
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
-        link.download = nomeArquivo; // Nome do arquivo para download
+        link.download = 'formulario_preenchido.pdf'; // Nome do arquivo para download
         link.click();
-        console.log(`Download iniciado: ${nomeArquivo}`);
+        console.log('Download iniciado');
 
         // Limpar o objeto URL após o download
         URL.revokeObjectURL(link.href);
     } catch (error) {
-        console.error('Erro ao salvar o PDF:', error);
-        alert('Erro ao salvar o PDF.');
+        console.error("Erro ao salvar o PDF:", error);
+        alert("Erro ao salvar o PDF.");
     }
 });
